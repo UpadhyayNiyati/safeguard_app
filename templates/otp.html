@@ -1,0 +1,407 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Verify OTP - Safety Assistant</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body style="background: linear-gradient(135deg, #FF6B6B 0%, #1ABC9C 100%);">
+    <div style="display: flex; align-items: center; justify-content: center; min-height: 100vh; padding: 2rem;">
+        <div class="card" style="max-width: 450px; width: 100%; padding: 3rem;">
+            <div style="text-align: center; margin-bottom: 2rem;">
+                <div style="font-size: 3rem; margin-bottom: 1rem;">📧</div>
+                <h2 style="color: var(--primary); margin-bottom: 0.5rem;">Verify Your Email</h2>
+                <p style="color: var(--text-secondary); margin: 0;">Enter the 4-digit code sent to your email</p>
+            </div>
+
+            {% if error %}
+            <div class="alert alert-error" style="margin-bottom: 1.5rem;">
+                <span style="font-size: 1.2rem;">✗</span><span>{{ error }}</span>
+            </div>
+            {% endif %}
+
+            <form method="POST" action="{{ url_for('verify_otp') }}" class="otp-form">
+                <div class="form-group">
+                    <input 
+                        type="text" 
+                        name="otp" 
+                        maxlength="4" 
+                        placeholder="0000" 
+                        style="font-size: 2rem; text-align: center; letter-spacing: 15px; font-family: 'Monaco', monospace;"
+                        required
+                        autocomplete="off"
+                        inputmode="numeric"
+                    >
+                </div>
+
+                <button type="submit" class="btn btn-primary" style="width: 100%;">
+                    Verify & Continue
+                </button>
+            </form>
+
+            <div style="text-align: center; margin-top: 1.5rem; padding-top: 1.5rem; border-top: 1px solid var(--border);">
+                <p id="timerText" style="color: var(--text-secondary); font-size: 0.9rem; margin: 0 0 0.75rem 0;">Resend OTP in <span id="seconds">60</span>s</p>
+                <a href="{{ url_for('login') }}" id="resendLink" style="display: none; color: var(--primary); text-decoration: none; font-weight: 600; font-size: 0.9rem;">↻ Didn't receive code?</a>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            let timeLeft = 60;
+            const timerText = document.getElementById('timerText');
+            const secondsSpan = document.getElementById('seconds');
+            const resendLink = document.getElementById('resendLink');
+
+            const countdown = setInterval(() => {
+                timeLeft--;
+                secondsSpan.innerText = timeLeft;
+
+                if (timeLeft <= 0) {
+                    clearInterval(countdown);
+                    timerText.style.display = 'none';
+                    resendLink.style.display = 'inline-block';
+                }
+            }, 1000);
+
+            const otpInput = document.querySelector('input[name="otp"]');
+            if (otpInput) {
+                otpInput.addEventListener('input', (e) => {
+                    const value = e.target.value.replace(/[^0-9]/g, '');
+                    e.target.value = value.slice(0, 4);
+                    if (value.length === 4) {
+                        otpInput.style.borderColor = 'var(--primary)';
+                    }
+                });
+            }
+        });
+    </script>
+</body>
+</html>
+    <div class="otp-card">
+        <div class="otp-header">
+            <i class="fas fa-envelope-open"></i>
+            <h1>Verify Your Email</h1>
+            <p>Enter the 4-digit code sent to your email</p>
+        </div>
+
+        {% if error %}
+        <div class="alert alert-error">
+            <i class="fas fa-exclamation-circle"></i> {{ error }}
+        </div>
+        {% endif %}
+
+        <form method="POST" action="{{ url_for('verify_otp') }}" class="otp-form">
+            <div class="otp-input-group">
+                <input 
+                    type="text" 
+                    name="otp" 
+                    maxlength="4" 
+                    placeholder="0000" 
+                    class="otp-input"
+                    required
+                    autocomplete="off"
+                    inputmode="numeric"
+                >
+            </div>
+
+            <button type="submit" class="btn btn-primary" style="width: 100%; margin-top: 20px;">
+                <i class="fas fa-check"></i> Verify & Continue
+            </button>
+        </form>
+
+        <div class="otp-footer">
+            <div class="timer-section">
+                <p id="timerText">Resend OTP in <span id="seconds">60</span>s</p>
+                <a href="{{ url_for('login') }}" id="resendLink" style="display: none;" class="resend-link">
+                    <i class="fas fa-redo"></i> Didn't receive code? Click here
+                </a>
+            </div>
+            <div class="help-text">
+                <p>Check your spam folder if you don't see the email</p>
+            </div>
+        </div>
+    </div>
+
+    <div class="otp-info">
+        <div class="info-box">
+            <i class="fas fa-lock"></i>
+            <h3>Secure Verification</h3>
+            <p>We use OTP codes to ensure only you can access your account</p>
+        </div>
+        <div class="info-box">
+            <i class="fas fa-clock"></i>
+            <h3>Time Limited</h3>
+            <p>Each code is valid for only 10 minutes for maximum security</p>
+        </div>
+        <div class="info-box">
+            <i class="fas fa-shield-alt"></i>
+            <h3>Privacy First</h3>
+            <p>Your email is never shared and used only for account verification</p>
+        </div>
+    </div>
+</div>
+
+<style>
+.otp-container {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 40px;
+    max-width: 1200px;
+    margin: 60px auto;
+    padding: 0 20px;
+    align-items: center;
+}
+
+.otp-card {
+    background: white;
+    padding: 40px;
+    border-radius: 16px;
+    box-shadow: 0 10px 40px rgba(0,0,0,0.1);
+}
+
+.otp-header {
+    text-align: center;
+    margin-bottom: 30px;
+}
+
+.otp-header i {
+    font-size: 3rem;
+    color: #667eea;
+    margin-bottom: 10px;
+    display: block;
+}
+
+.otp-header h1 {
+    font-size: 2rem;
+    color: #2c3e50;
+    margin: 10px 0 5px 0;
+}
+
+.otp-header p {
+    color: #7f8c8d;
+    font-size: 0.95rem;
+    margin: 0;
+}
+
+.alert {
+    padding: 15px;
+    border-radius: 10px;
+    margin-bottom: 20px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 0.95rem;
+}
+
+.alert-error {
+    background: #f8d7da;
+    color: #721c24;
+    border: 1px solid #f5c6cb;
+}
+
+.alert i {
+    font-size: 1.2rem;
+}
+
+.otp-form {
+    display: flex;
+    flex-direction: column;
+}
+
+.otp-input-group {
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+    margin-bottom: 20px;
+}
+
+.otp-input {
+    width: 100%;
+    padding: 18px;
+    border: 2px solid #e0e0e0;
+    border-radius: 10px;
+    font-size: 2rem;
+    text-align: center;
+    letter-spacing: 15px;
+    font-family: 'Monaco', 'Menlo', monospace;
+    transition: border-color 0.3s, box-shadow 0.3s;
+}
+
+.otp-input:focus {
+    outline: none;
+    border-color: #667eea;
+    box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.15);
+}
+
+.btn {
+    padding: 14px;
+    border: none;
+    border-radius: 10px;
+    font-size: 1rem;
+    font-weight: 600;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    transition: all 0.3s;
+}
+
+.btn-primary {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+}
+
+.btn-primary:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 10px 25px rgba(102, 126, 234, 0.3);
+}
+
+.btn-primary:active {
+    transform: translateY(0);
+}
+
+.otp-footer {
+    text-align: center;
+    margin-top: 25px;
+    padding-top: 20px;
+    border-top: 1px solid #e0e0e0;
+}
+
+.timer-section {
+    margin-bottom: 15px;
+}
+
+.timer-section p {
+    color: #7f8c8d;
+    font-size: 0.9rem;
+    margin: 0;
+}
+
+.resend-link {
+    display: inline-block;
+    color: #667eea;
+    text-decoration: none;
+    font-weight: 600;
+    font-size: 0.9rem;
+    margin-top: 10px;
+    transition: color 0.3s;
+}
+
+.resend-link:hover {
+    color: #5568d3;
+    text-decoration: underline;
+}
+
+.help-text {
+    margin-top: 10px;
+}
+
+.help-text p {
+    color: #95a5a6;
+    font-size: 0.85rem;
+    margin: 0;
+}
+
+.otp-info {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 20px;
+}
+
+.info-box {
+    background: white;
+    padding: 25px;
+    border-radius: 12px;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.08);
+    text-align: center;
+    transition: transform 0.3s;
+}
+
+.info-box:hover {
+    transform: translateY(-5px);
+}
+
+.info-box i {
+    font-size: 2.5rem;
+    color: #667eea;
+    margin-bottom: 15px;
+    display: block;
+}
+
+.info-box h3 {
+    font-size: 1.1rem;
+    color: #2c3e50;
+    margin-bottom: 10px;
+}
+
+.info-box p {
+    color: #555;
+    line-height: 1.6;
+    margin: 0;
+    font-size: 0.95rem;
+}
+
+@media (max-width: 1024px) {
+    .otp-container {
+        grid-template-columns: 1fr;
+        margin: 40px auto;
+    }
+    
+    .otp-info {
+        grid-template-columns: 1fr;
+    }
+}
+
+@media (max-width: 768px) {
+    .otp-card {
+        padding: 25px;
+    }
+    
+    .otp-header h1 {
+        font-size: 1.5rem;
+    }
+    
+    .otp-header i {
+        font-size: 2rem;
+    }
+    
+    .otp-input {
+        font-size: 1.5rem;
+        letter-spacing: 10px;
+    }
+}
+</style>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    let timeLeft = 60;
+    const timerText = document.getElementById('timerText');
+    const secondsSpan = document.getElementById('seconds');
+    const resendLink = document.getElementById('resendLink');
+
+    const countdown = setInterval(() => {
+        timeLeft--;
+        secondsSpan.innerText = timeLeft;
+
+        if (timeLeft <= 0) {
+            clearInterval(countdown);
+            timerText.style.display = 'none';
+            resendLink.style.display = 'inline-block';
+        }
+    }, 1000);
+
+    // Auto-focus and format OTP input
+    const otpInput = document.querySelector('.otp-input');
+    if (otpInput) {
+        otpInput.addEventListener('input', (e) => {
+            const value = e.target.value.replace(/[^0-9]/g, '');
+            e.target.value = value.slice(0, 4);
+        });
+    }
+});
+</script>
+
+{% endblock %}

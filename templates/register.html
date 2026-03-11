@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sign Up - Safety Assistant</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body style="background: linear-gradient(135deg, #FF6B6B 0%, #1ABC9C 100%);">
+    <div style="display: flex; align-items: center; justify-content: center; min-height: 100vh; padding: 2rem;">
+        <div class="card" style="max-width: 450px; width: 100%; padding: 3rem;">
+            <div style="text-align: center; margin-bottom: 2rem;">
+                <div style="font-size: 3rem; margin-bottom: 1rem;">✨</div>
+                <h2 style="color: var(--primary); margin-bottom: 0.5rem;">Create Account</h2>
+                <p style="color: var(--text-secondary); margin: 0;">Join Safety Assistant today</p>
+            </div>
+
+            <div id="alertBox" class="alert" style="display: none; margin-bottom: 1.5rem;"></div>
+
+            <form id="registerForm">
+                <div class="form-group">
+                    <label for="name">Full Name</label>
+                    <input type="text" id="name" name="name" required placeholder="Your Name">
+                </div>
+
+                <div class="form-group">
+                    <label for="email">Email Address</label>
+                    <input type="email" id="email" name="email" required placeholder="your@email.com">
+                </div>
+
+                <button type="submit" class="btn btn-primary" style="width: 100%;">
+                    Create Account
+                </button>
+            </form>
+
+            <div style="text-align: center; margin-top: 1.5rem; color: var(--text-secondary); font-size: 0.9rem;">
+                Already have an account? <a href="/login" style="color: var(--primary); font-weight: 600;">Sign In</a>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.getElementById('registerForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const name = document.getElementById('name').value;
+            const email = document.getElementById('email').value;
+            const alertBox = document.getElementById('alertBox');
+            
+            try {
+                const response = await fetch('/register', {
+                    method: 'POST',
+                    headers: {'Content-Type': 'application/x-www-form-urlencoded'},
+                    body: `name=${encodeURIComponent(name)}&email=${encodeURIComponent(email)}`
+                });
+
+                if (response.ok) {
+                    alertBox.className = 'alert alert-success';
+                    alertBox.innerHTML = '<span style="font-size: 1.2rem;">✓</span><span>Account created! Redirecting...</span>';
+                    alertBox.style.display = 'flex';
+                    setTimeout(() => window.location.href = '/login', 1500);
+                } else {
+                    alertBox.className = 'alert alert-error';
+                    alertBox.innerHTML = '<span style="font-size: 1.2rem;">✗</span><span>Error creating account. Try again.</span>';
+                    alertBox.style.display = 'flex';
+                }
+            } catch (error) {
+                alertBox.className = 'alert alert-error';
+                alertBox.innerHTML = '<span style="font-size: 1.2rem;">✗</span><span>Network error. Please try again.</span>';
+                alertBox.style.display = 'flex';
+            }
+        });
+    </script>
+</body>
+</html>

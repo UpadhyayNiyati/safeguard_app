@@ -1,0 +1,333 @@
+{% extends "base.html" %}
+
+{% block title %}Home - Safety Assistant{% endblock %}
+
+{% block content %}
+
+<div class="hero-section">
+    <h1 class="hero-title">Your Safety is Our Priority</h1>
+    <p class="hero-subtitle">Quick access to emergency services and safety tools</p>
+</div>
+
+<div class="dashboard-container">
+    <div class="control-panel">
+        <div class="panel-header">
+            <h2>📍 Find Emergency Services</h2>
+            <p>Select the service you need and we'll find the nearest location for you</p>
+        </div>
+
+        <div class="form-group">
+            <label for="amenityType" class="form-label">Select Service Type:</label>
+            <select id="amenityType" class="form-select">
+                <option value="police">🚨 Police Station</option>
+                <option value="hospital">🏥 Hospital</option>
+                <option value="fire_station">🔥 Fire Station</option>
+            </select>
+        </div>
+
+        <button class="btn btn-primary" id="findBtn" onclick="findNearest()">
+            <i class="fas fa-search"></i> Find Nearest Service
+        </button>
+
+        <button class="btn btn-success" id="shareBtn" onclick="shareLocation()">
+            <i class="fas fa-map-pin"></i> Share My Location
+        </button>
+
+        <div id="status" class="status-box">
+            <p class="status-text">Ready to help. Click a button to get started.</p>
+        </div>
+    </div>
+
+    <div class="map-panel">
+        <div id="map-container" class="map-container">
+            <div class="map-placeholder">
+                <i class="fas fa-map"></i>
+                <p>Map will appear here</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+.hero-section {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    padding: 60px 20px;
+    text-align: center;
+    margin-bottom: 40px;
+}
+
+.hero-title {
+    font-size: 2.5rem;
+    margin-bottom: 10px;
+    font-weight: 700;
+}
+
+.hero-subtitle {
+    font-size: 1.1rem;
+    opacity: 0.9;
+}
+
+.dashboard-container {
+    display: grid;
+    grid-template-columns: 1fr 1.5fr;
+    gap: 30px;
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 0 20px 40px;
+}
+
+.control-panel {
+    background: white;
+    border-radius: 16px;
+    padding: 30px;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+}
+
+.panel-header h2 {
+    font-size: 1.5rem;
+    color: #2c3e50;
+    margin-bottom: 8px;
+}
+
+.panel-header p {
+    color: #7f8c8d;
+    font-size: 0.95rem;
+    margin-bottom: 20px;
+}
+
+.form-group {
+    margin-bottom: 20px;
+}
+
+.form-label {
+    display: block;
+    font-weight: 600;
+    color: #2c3e50;
+    margin-bottom: 8px;
+    font-size: 0.95rem;
+}
+
+.form-select {
+    width: 100%;
+    padding: 12px;
+    border: 2px solid #e0e0e0;
+    border-radius: 8px;
+    font-size: 1rem;
+    background: white;
+    cursor: pointer;
+    transition: border-color 0.3s;
+}
+
+.form-select:focus {
+    outline: none;
+    border-color: #667eea;
+}
+
+.btn {
+    width: 100%;
+    padding: 14px;
+    border: none;
+    border-radius: 8px;
+    font-size: 1rem;
+    font-weight: 600;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    transition: all 0.3s;
+    margin-top: 12px;
+}
+
+.btn-primary {
+    background: #667eea;
+    color: white;
+}
+
+.btn-primary:hover:not(:disabled) {
+    background: #5568d3;
+    transform: translateY(-2px);
+    box-shadow: 0 8px 20px rgba(102, 126, 234, 0.3);
+}
+
+.btn-success {
+    background: #2ecc71;
+    color: white;
+}
+
+.btn-success:hover:not(:disabled) {
+    background: #27ae60;
+    transform: translateY(-2px);
+    box-shadow: 0 8px 20px rgba(46, 204, 113, 0.3);
+}
+
+.btn:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+}
+
+.status-box {
+    background: #f8f9fa;
+    border-radius: 8px;
+    padding: 20px;
+    margin-top: 20px;
+    min-height: 100px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.status-text {
+    color: #7f8c8d;
+    font-size: 0.95rem;
+    margin: 0;
+}
+
+.map-panel {
+    background: white;
+    border-radius: 16px;
+    overflow: hidden;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+    min-height: 500px;
+}
+
+.map-container {
+    height: 100%;
+    width: 100%;
+}
+
+.map-placeholder {
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    color: #bdc3c7;
+    font-size: 3rem;
+}
+
+.map-placeholder p {
+    font-size: 1rem;
+    margin-top: 10px;
+}
+
+@media (max-width: 1024px) {
+    .dashboard-container {
+        grid-template-columns: 1fr;
+    }
+    
+    .hero-title {
+        font-size: 2rem;
+    }
+}
+
+@media (max-width: 768px) {
+    .hero-section {
+        padding: 40px 20px;
+    }
+    
+    .hero-title {
+        font-size: 1.5rem;
+    }
+    
+    .control-panel {
+        padding: 20px;
+    }
+}
+</style>
+
+<script>
+function findNearest() {
+    const type = document.getElementById("amenityType").value;
+    getLocation((lat, lon) => {
+        performSearch(lat, lon, type);
+    });
+}
+
+function shareLocation() {
+    const type = document.getElementById("amenityType").value;
+    getLocation((lat, lon) => {
+        performSearch(lat, lon, type, true);
+    });
+}
+
+function getLocation(callback) {
+    const status = document.getElementById("status");
+    const findBtn = document.getElementById("findBtn");
+    const shareBtn = document.getElementById("shareBtn");
+    
+    if (!navigator.geolocation) {
+        updateStatus("❌ Geolocation not supported by your browser", "error");
+        return;
+    }
+
+    findBtn.disabled = true;
+    shareBtn.disabled = true;
+    updateStatus("📡 Getting your location...", "loading");
+
+    navigator.geolocation.getCurrentPosition(
+        pos => {
+            callback(pos.coords.latitude, pos.coords.longitude);
+        },
+        err => {
+            updateStatus(`❌ Location Error: ${err.message}`, "error");
+            findBtn.disabled = false;
+            shareBtn.disabled = false;
+        },
+        { enableHighAccuracy: true, timeout: 15000 }
+    );
+}
+
+function performSearch(lat, lon, type, isSharing = false) {
+    const findBtn = document.getElementById("findBtn");
+    const shareBtn = document.getElementById("shareBtn");
+
+    fetch("/find_nearest", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ lat, lon, type })
+    })
+    .then(res => res.json())
+    .then(data => {
+        if (data.error) {
+            updateStatus(`⚠️ ${data.error}`, "error");
+        } else {
+            displayResult(data, isSharing);
+        }
+    })
+    .catch(err => {
+        updateStatus("❌ Server Error. Please try again.", "error");
+        console.error(err);
+    })
+    .finally(() => {
+        findBtn.disabled = false;
+        shareBtn.disabled = false;
+    });
+}
+
+function updateStatus(message, type = "info") {
+    const status = document.getElementById("status");
+    status.innerHTML = `<p class="status-text">${message}</p>`;
+    status.className = `status-box status-${type}`;
+}
+
+function displayResult(data, isSharing) {
+    const status = document.getElementById("status");
+    const mapContainer = document.getElementById("map-container");
+    
+    status.innerHTML = `
+        <div class="result-box">
+            <h3>✅ ${data.name}</h3>
+            <p><strong>Distance:</strong> ${data.distance} km</p>
+            <p><strong>Phone:</strong> ${data.phone}</p>
+            ${data.phone !== "Not available" ? `<a href="tel:${data.phone}" class="btn btn-call">📞 Call Now</a>` : ''}
+            ${isSharing ? '<p style="margin-top: 10px; color: #2ecc71; font-weight: 600;">📍 Location shared with nearby contacts</p>' : ''}
+        </div>
+    `;
+    
+    mapContainer.innerHTML = data.map_html;
+}
+</script>
+
+{% endblock %}

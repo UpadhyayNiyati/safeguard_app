@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Contact Us - Safety Assistant</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <!-- Navbar -->
+    <nav class="navbar">
+        <div class="container flex-between">
+            <a href="/" class="navbar-brand">
+                <span class="brand-icon">🛡️</span>
+                Safety Assistant
+            </a>
+            <ul class="nav-links">
+                <li><a href="/" class="nav-link">Home</a></li>
+                <li><a href="/about" class="nav-link">About</a></li>
+                <li><a href="/emergency-contacts" class="nav-link">Contacts</a></li>
+                <li><a href="/contact" class="nav-link active">Contact Us</a></li>
+                <li><a href="/support" class="nav-link">Support</a></li>
+            </ul>
+            <div class="user-profile" {% if not user %}style="display: none;"{% endif %}>
+                <span class="user-icon">👤</span>
+                <span class="user-name">{{ user[1] if user else 'User' }}</span>
+                <div class="dropdown">
+                    <a href="/emergency-contacts" class="dropdown-item">📋 My Contacts</a>
+                    <a href="/logout" class="dropdown-item logout-item">🚪 Logout</a>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <div class="page-content">
+        <div class="container container-sm">
+            <!-- Header -->
+            <section style="text-align: center; padding: 3rem 0; margin-bottom: 2rem;">
+                <h1 style="color: var(--primary); font-size: 2rem; margin-bottom: 0.5rem;">Contact Us</h1>
+                <p style="color: var(--text-secondary);">We'd love to hear from you. Send us a message!</p>
+            </section>
+
+            <!-- Contact Form -->
+            <div class="card">
+                <div class="card-body">
+                    <form id="contactForm">
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="contact_name">Your Name *</label>
+                                <input type="text" id="contact_name" name="name" required placeholder="John Doe">
+                            </div>
+                            <div class="form-group">
+                                <label for="contact_email">Email Address *</label>
+                                <input type="email" id="contact_email" name="email" required placeholder="you@example.com">
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="contact_subject">Subject *</label>
+                            <input type="text" id="contact_subject" name="subject" required placeholder="How can we help?">
+                        </div>
+
+                        <div class="form-group">
+                            <label for="contact_message">Message *</label>
+                            <textarea id="contact_message" name="message" rows="6" required placeholder="Tell us what's on your mind..." style="resize: vertical;"></textarea>
+                        </div>
+
+                        <div id="contactAlert" style="display: none; margin-bottom: 1rem;"></div>
+
+                        <button type="submit" class="btn btn-primary" style="width: 100%;">
+                            Send Message
+                        </button>
+                    </form>
+                </div>
+            </div>
+
+            <!-- Contact Info -->
+            <section style="margin-top: 3rem;">
+                <h2 style="text-align: center; color: var(--primary); margin-bottom: 2rem;">Other Ways to Reach Us</h2>
+                <div class="grid-3">
+                    <div class="card">
+                        <div class="card-body text-center">
+                            <div style="font-size: 2.5rem; margin-bottom: 1rem;">📧</div>
+                            <h4 style="margin: 0.5rem 0;">Email</h4>
+                            <p style="color: var(--text-secondary); margin: 0.5rem 0; font-size: 0.9rem;">support@safetyassistant.com</p>
+                        </div>
+                    </div>
+                    <div class="card">
+                        <div class="card-body text-center">
+                            <div style="font-size: 2.5rem; margin-bottom: 1rem;">📞</div>
+                            <h4 style="margin: 0.5rem 0;">Phone</h4>
+                            <p style="color: var(--text-secondary); margin: 0.5rem 0; font-size: 0.9rem;">+1 (555) 123-4567</p>
+                        </div>
+                    </div>
+                    <div class="card">
+                        <div class="card-body text-center">
+                            <div style="font-size: 2.5rem; margin-bottom: 1rem;">🕐</div>
+                            <h4 style="margin: 0.5rem 0;">Hours</h4>
+                            <p style="color: var(--text-secondary); margin: 0.5rem 0; font-size: 0.9rem;">24/7 Available</p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </div>
+    </div>
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-grid">
+                <div class="footer-section">
+                    <h5>About Us</h5>
+                    <a href="/about">About Safety Assistant</a>
+                    <a href="/support">Help & Support</a>
+                    <a href="/contact">Contact Us</a>
+                </div>
+                <div class="footer-section">
+                    <h5>Resources</h5>
+                    <a href="/emergency-contacts">Emergency Contacts</a>
+                    <a href="/">Home</a>
+                    <a href="/support">FAQ</a>
+                </div>
+                <div class="footer-section">
+                    <h5>Legal</h5>
+                    <a href="#">Privacy Policy</a>
+                    <a href="#">Terms of Service</a>
+                    <a href="#">Cookie Policy</a>
+                </div>
+                <div class="footer-section">
+                    <h5>Connect</h5>
+                    <a href="#">Safety Tips</a>
+                    <a href="#">Blog</a>
+                    <a href="#">Careers</a>
+                </div>
+            </div>
+            
+            <div class="social-links">
+                <a href="#" class="social-link" title="Facebook">f</a>
+                <a href="#" class="social-link" title="Twitter">𝕏</a>
+                <a href="#" class="social-link" title="Instagram">📷</a>
+                <a href="#" class="social-link" title="LinkedIn">in</a>
+                <a href="#" class="social-link" title="WhatsApp">W</a>
+            </div>
+
+            <div class="footer-bottom">
+                <p>&copy; 2024 Safety Assistant. All rights reserved. Your safety is our priority.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        document.getElementById('contactForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            const formData = {
+                name: document.getElementById('contact_name').value,
+                email: document.getElementById('contact_email').value,
+                subject: document.getElementById('contact_subject').value,
+                message: document.getElementById('contact_message').value
+            };
+
+            try {
+                const response = await fetch('/send-message', {
+                    method: 'POST',
+                    headers: {'Content-Type': 'application/json'},
+                    body: JSON.stringify(formData)
+                });
+
+                const data = await response.json();
+                const alertBox = document.getElementById('contactAlert');
+
+                if (response.ok) {
+                    alertBox.className = 'alert alert-success';
+                    alertBox.innerHTML = '<span style="font-size: 1.2rem;">✓</span><span>Message sent successfully! We\'ll be in touch soon.</span>';
+                    alertBox.style.display = 'flex';
+                    document.getElementById('contactForm').reset();
+                    
+                    setTimeout(() => {
+                        alertBox.style.display = 'none';
+                    }, 5000);
+                } else {
+                    alertBox.className = 'alert alert-error';
+                    alertBox.innerHTML = '<span style="font-size: 1.2rem;">✗</span><span>' + (data.error || 'Error sending message') + '</span>';
+                    alertBox.style.display = 'flex';
+                }
+            } catch (error) {
+                const alertBox = document.getElementById('contactAlert');
+                alertBox.className = 'alert alert-error';
+                alertBox.innerHTML = '<span style="font-size: 1.2rem;">✗</span><span>Error sending message</span>';
+                alertBox.style.display = 'flex';
+            }
+        });
+    </script>
+</body>
+</html>

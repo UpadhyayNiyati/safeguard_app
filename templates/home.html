@@ -1,0 +1,264 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Home - Safety Assistant</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+</head>
+<body>
+    <!-- Navbar -->
+    <nav class="navbar">
+        <div class="container flex-between">
+            <a href="/" class="navbar-brand">
+                <span class="brand-icon">🛡️</span>
+                Safety Assistant
+            </a>
+            <ul class="nav-links">
+                <li><a href="/" class="nav-link active">Home</a></li>
+                <li><a href="/about" class="nav-link">About</a></li>
+                <li><a href="/emergency-contacts" class="nav-link">Contacts</a></li>
+                <li><a href="/contact" class="nav-link">Contact Us</a></li>
+                <li><a href="/support" class="nav-link">Support</a></li>
+            </ul>
+            <div class="user-profile">
+                <span class="user-icon">👤</span>
+                <span class="user-name">{{ user[1] if user else 'User' }}</span>
+                <div class="dropdown">
+                    <a href="/emergency-contacts" class="dropdown-item">📋 My Contacts</a>
+                    <a href="/logout" class="dropdown-item logout-item">🚪 Logout</a>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <div class="page-content">
+        <div class="container">
+            <!-- Hero Section -->
+            <section style="text-align: center; padding: 3rem 0; margin-bottom: 2rem;">
+                <h1 style="color: var(--primary); font-size: 2.5rem; margin-bottom: 0.5rem;">Find Nearby Services</h1>
+                <p style="color: var(--text-secondary); font-size: 1.1rem;">Locate police stations, hospitals, and fire stations near you instantly</p>
+            </section>
+
+            <!-- Service Selection -->
+            <section style="margin-bottom: 3rem;">
+                <div class="grid-3">
+                    <div class="card service-card police" onclick="selectService('police')">
+                        <div class="card-body text-center">
+                            <div class="service-icon">🚔</div>
+                            <h3 style="margin: 1rem 0;">Police Station</h3>
+                            <p style="color: var(--text-secondary); margin: 0;">Quick access to law enforcement</p>
+                        </div>
+                    </div>
+
+                    <div class="card service-card hospital" onclick="selectService('hospital')">
+                        <div class="card-body text-center">
+                            <div class="service-icon">🏥</div>
+                            <h3 style="margin: 1rem 0;">Hospital</h3>
+                            <p style="color: var(--text-secondary); margin: 0;">Emergency medical services</p>
+                        </div>
+                    </div>
+
+                    <div class="card service-card fire" onclick="selectService('fire')">
+                        <div class="card-body text-center">
+                            <div class="service-icon">🚒</div>
+                            <h3 style="margin: 1rem 0;">Fire Station</h3>
+                            <p style="color: var(--text-secondary); margin: 0;">Emergency fire & rescue</p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Map Container -->
+            <section style="margin-bottom: 3rem;">
+                <div id="mapContainer" class="map-container" style="height: 600px; border-radius: var(--radius-lg); overflow: hidden; box-shadow: var(--shadow-lg);"></div>
+            </section>
+
+            <!-- Result Box -->
+            <section id="resultSection" style="display: none;">
+                <div class="result-box card">
+                    <div class="card-body">
+                        <h3 id="resultName"></h3>
+                        <p><strong>Distance:</strong> <span id="resultDistance"></span></p>
+                        <p><strong>Address:</strong> <span id="resultAddress"></span></p>
+                        <p><strong>Phone:</strong> <span id="resultPhone"></span></p>
+                        <a href="" id="callBtn" class="btn btn-call">📞 Call Now</a>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Location Status -->
+            <section id="locationStatus" style="display: none; margin-bottom: 2rem;">
+                <div class="alert alert-info">
+                    <span style="font-size: 1.2rem;">📍</span>
+                    <span id="locationMessage">Detecting your location...</span>
+                </div>
+            </section>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-grid">
+                <div class="footer-section">
+                    <h5>About Us</h5>
+                    <a href="/about">About Safety Assistant</a>
+                    <a href="/support">Help & Support</a>
+                    <a href="/contact">Contact Us</a>
+                </div>
+                <div class="footer-section">
+                    <h5>Resources</h5>
+                    <a href="/emergency-contacts">Emergency Contacts</a>
+                    <a href="/">Home</a>
+                    <a href="/support">FAQ</a>
+                </div>
+                <div class="footer-section">
+                    <h5>Legal</h5>
+                    <a href="#">Privacy Policy</a>
+                    <a href="#">Terms of Service</a>
+                    <a href="#">Cookie Policy</a>
+                </div>
+                <div class="footer-section">
+                    <h5>Connect</h5>
+                    <a href="#">Safety Tips</a>
+                    <a href="#">Blog</a>
+                    <a href="#">Careers</a>
+                </div>
+            </div>
+            
+            <div class="social-links">
+                <a href="#" class="social-link" title="Facebook">f</a>
+                <a href="#" class="social-link" title="Twitter">𝕏</a>
+                <a href="#" class="social-link" title="Instagram">📷</a>
+                <a href="#" class="social-link" title="LinkedIn">in</a>
+                <a href="#" class="social-link" title="WhatsApp">W</a>
+            </div>
+
+            <div class="footer-bottom">
+                <p>&copy; 2024 Safety Assistant. All rights reserved. Your safety is our priority.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        let map;
+        let userMarker;
+        let resultMarker;
+        let selectedService = 'police';
+
+        // Initialize map when page loads
+        function initializeMap() {
+            map = L.map('mapContainer').setView([28.7041, 77.1025], 14);
+            L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                attribution: '© OpenStreetMap contributors',
+                maxZoom: 19
+            }).addTo(map);
+
+            // Get user location
+            getLocation();
+        }
+
+        function getLocation() {
+            const locationStatus = document.getElementById('locationStatus');
+            const locationMessage = document.getElementById('locationMessage');
+            
+            locationStatus.style.display = 'block';
+            locationMessage.textContent = '📍 Detecting your location...';
+
+            if (navigator.geolocation) {
+                navigator.geolocation.getCurrentPosition(
+                    (position) => {
+                        const lat = position.coords.latitude;
+                        const lon = position.coords.longitude;
+                        
+                        map.setView([lat, lon], 14);
+                        
+                        if (userMarker) map.removeLayer(userMarker);
+                        userMarker = L.marker([lat, lon], {
+                            icon: L.divIcon({
+                                className: 'custom-marker',
+                                html: '<div style="width: 30px; height: 30px; background: linear-gradient(135deg, #FF6B6B 0%, #E63946 100%); border-radius: 50%; border: 3px solid white; box-shadow: 0 2px 8px rgba(0,0,0,0.3);"></div>',
+                                iconSize: [30, 30],
+                                iconAnchor: [15, 15]
+                            })
+                        }).addTo(map).bindPopup('📍 Your Location');
+                        
+                        locationMessage.textContent = '✓ Location detected! Select a service to find nearby options.';
+                        
+                        // Auto-search for the default service
+                        findNearestService(lat, lon, selectedService);
+                    },
+                    (error) => {
+                        locationMessage.textContent = '✗ Unable to detect location. Using default location.';
+                        // Use default location
+                        findNearestService(28.7041, 77.1025, selectedService);
+                    }
+                );
+            } else {
+                locationMessage.textContent = 'Geolocation is not supported. Using default location.';
+                findNearestService(28.7041, 77.1025, selectedService);
+            }
+        }
+
+        function selectService(service) {
+            selectedService = service;
+            const lat = userMarker ? userMarker.getLatLng().lat : 28.7041;
+            const lon = userMarker ? userMarker.getLatLng().lng : 77.1025;
+            findNearestService(lat, lon, service);
+        }
+
+        async function findNearestService(lat, lon, type) {
+            try {
+                const response = await fetch(`/find_nearest`, {
+                    method: 'POST',
+                    headers: {'Content-Type': 'application/json'},
+                    body: JSON.stringify({lat, lon, type})
+                });
+
+                if (response.ok) {
+                    const data = await response.json();
+                    
+                    if (resultMarker) map.removeLayer(resultMarker);
+                    
+                    const icon = type === 'police' ? '🚔' : type === 'hospital' ? '🏥' : '🚒';
+                    const color = type === 'police' ? '#FF6B6B' : type === 'hospital' ? '#E74C3C' : '#F39C12';
+                    
+                    resultMarker = L.marker([data.lat, data.lon], {
+                        icon: L.divIcon({
+                            className: 'custom-marker',
+                            html: `<div style="width: 40px; height: 40px; background: ${color}; border-radius: 50%; border: 3px solid white; box-shadow: 0 2px 8px rgba(0,0,0,0.3); display: flex; align-items: center; justify-content: center; font-size: 1.5rem;">${icon}</div>`,
+                            iconSize: [40, 40],
+                            iconAnchor: [20, 20]
+                        })
+                    }).addTo(map).bindPopup(`<strong>${data.name}</strong><br>Phone: ${data.phone}`);
+
+                    // Show result
+                    document.getElementById('resultName').textContent = data.name;
+                    document.getElementById('resultDistance').textContent = data.distance + ' km';
+                    document.getElementById('resultAddress').textContent = data.phone;
+                    document.getElementById('resultPhone').textContent = data.phone;
+                    document.getElementById('callBtn').href = data.phone_uri;
+                    document.getElementById('resultSection').style.display = 'block';
+
+                    // Fit bounds to show both markers
+                    map.fitBounds([
+                        [lat, lon],
+                        [data.lat, data.lon]
+                    ], {padding: [50, 50]});
+                } else {
+                    document.getElementById('resultSection').style.display = 'none';
+                }
+            } catch (error) {
+                console.error('Error:', error);
+            }
+        }
+
+        // Initialize on page load
+        window.addEventListener('load', initializeMap);
+    </script>
+</body>
+</html>

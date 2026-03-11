@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Emergency Contacts - Safety Assistant</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <!-- Navbar -->
+    <nav class="navbar">
+        <div class="container flex-between">
+            <a href="/" class="navbar-brand">
+                <span class="brand-icon">🛡️</span>
+                Safety Assistant
+            </a>
+            <ul class="nav-links">
+                <li><a href="/" class="nav-link">Home</a></li>
+                <li><a href="/about" class="nav-link">About</a></li>
+                <li><a href="/emergency-contacts" class="nav-link active">Contacts</a></li>
+                <li><a href="/contact" class="nav-link">Contact Us</a></li>
+                <li><a href="/support" class="nav-link">Support</a></li>
+            </ul>
+            <div class="user-profile">
+                <span class="user-icon">👤</span>
+                <span class="user-name">{{ user[1] if user else 'User' }}</span>
+                <div class="dropdown">
+                    <a href="/emergency-contacts" class="dropdown-item">📋 My Contacts</a>
+                    <a href="/logout" class="dropdown-item logout-item">🚪 Logout</a>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <div class="page-content">
+        <div class="container container-sm">
+
+            <!-- Header -->
+            <section style="text-align: center; padding: 3rem 0; margin-bottom: 2rem;">
+                <h1 style="color: var(--primary); font-size: 2rem; margin-bottom: 0.5rem;">Emergency Contacts</h1>
+                <p style="color: var(--text-secondary);">Manage your emergency contacts for quick access in times of need</p>
+            </section>
+
+            <!-- Add Contact Form -->
+            <div class="card mb-4">
+                <div class="card-header">
+                    <h3 style="margin: 0;">Add New Contact</h3>
+                </div>
+                <div class="card-body">
+                    <form id="addContactForm">
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="name">Full Name *</label>
+                                <input type="text" id="name" name="name" required placeholder="John Doe">
+                            </div>
+                            <div class="form-group">
+                                <label for="phone">Phone Number *</label>
+                                <input type="tel" id="phone" name="phone" required placeholder="+1 (555) 000-0000">
+                            </div>
+                        </div>
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="email">Email (Optional)</label>
+                                <input type="email" id="email" name="email" placeholder="john@example.com">
+                            </div>
+                            <div class="form-group">
+                                <label for="relationship">Relationship</label>
+                                <select id="relationship" name="relationship">
+                                    <option value="Family">Family</option>
+                                    <option value="Friend">Friend</option>
+                                    <option value="Doctor">Doctor</option>
+                                    <option value="Lawyer">Lawyer</option>
+                                    <option value="Other">Other</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div id="addContactAlert" style="display: none; margin-bottom: 1rem;"></div>
+                        <button type="submit" class="btn btn-primary">➕ Add Contact</button>
+                    </form>
+                </div>
+            </div>
+
+            <!-- Contacts List -->
+            <div>
+                <h2 style="margin-bottom: 1.5rem;">Your Contacts</h2>
+                <div id="contactsList" style="display: grid; gap: 1rem;">
+                    {% if contacts %}
+                        {% for contact in contacts %}
+                        <div class="card contact-card" data-contact-id="{{ contact[0] }}">
+                            <div class="card-body">
+                                <div class="flex-between" style="margin-bottom: 1rem;">
+                                    <div>
+                                        <h4 style="margin: 0 0 0.25rem 0; color: var(--primary);">{{ contact[2] }}</h4>
+                                        <p style="margin: 0.25rem 0; color: var(--text-secondary); font-size: 0.9rem;">{{ contact[4] if contact[4] else 'No relationship' }}</p>
+                                    </div>
+                                    <div style="text-align: right;">
+                                        <p style="margin: 0; font-size: 1.1rem; font-weight: 600; color: var(--primary);">{{ contact[3] }}</p>
+                                        {% if contact[3] %}
+                                        <a href="tel:{{ contact[3] }}" class="btn btn-sm btn-secondary" style="margin-top: 0.5rem;">📞 Call</a>
+                                        {% endif %}
+                                    </div>
+                                </div>
+                                <div style="display: flex; gap: 0.75rem;">
+                                    <button type="button" class="btn btn-sm btn-outline delete-contact" data-id="{{ contact[0] }}">🗑️ Delete</button>
+                                </div>
+                            </div>
+                        </div>
+                        {% endfor %}
+                    {% else %}
+                    <div class="alert alert-info">
+                        <span style="font-size: 1.2rem;">ℹ️</span>
+                        <span>No contacts added yet. Add your first emergency contact above.</span>
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-grid">
+                <div class="footer-section">
+                    <h5>About Us</h5>
+                    <a href="/about">About Safety Assistant</a>
+                    <a href="/support">Help & Support</a>
+                    <a href="/contact">Contact Us</a>
+                </div>
+                <div class="footer-section">
+                    <h5>Resources</h5>
+                    <a href="/emergency-contacts">Emergency Contacts</a>
+                    <a href="/">Home</a>
+                    <a href="/support">FAQ</a>
+                </div>
+                <div class="footer-section">
+                    <h5>Legal</h5>
+                    <a href="#">Privacy Policy</a>
+                    <a href="#">Terms of Service</a>
+                    <a href="#">Cookie Policy</a>
+                </div>
+                <div class="footer-section">
+                    <h5>Connect</h5>
+                    <a href="#">Safety Tips</a>
+                    <a href="#">Blog</a>
+                    <a href="#">Careers</a>
+                </div>
+            </div>
+            
+            <div class="social-links">
+                <a href="#" class="social-link" title="Facebook">f</a>
+                <a href="#" class="social-link" title="Twitter">𝕏</a>
+                <a href="#" class="social-link" title="Instagram">📷</a>
+                <a href="#" class="social-link" title="LinkedIn">in</a>
+                <a href="#" class="social-link" title="WhatsApp">W</a>
+            </div>
+
+            <div class="footer-bottom">
+                <p>&copy; 2024 Safety Assistant. All rights reserved. Your safety is our priority.</p>
+            </div>
+        </div>
+    </footer>
+
+
+    <script>
+        // Add Contact Form
+        document.getElementById('addContactForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            const formData = {
+                name: document.getElementById('name').value,
+                phone: document.getElementById('phone').value,
+                email: document.getElementById('email').value,
+                relationship: document.getElementById('relationship').value
+            };
+
+            try {
+                const response = await fetch('/add-contact', {
+                    method: 'POST',
+                    headers: {'Content-Type': 'application/json'},
+                    body: JSON.stringify(formData)
+                });
+
+                const data = await response.json();
+                const alertBox = document.getElementById('addContactAlert');
+
+                if (response.ok) {
+                    alertBox.className = 'alert alert-success';
+                    alertBox.innerHTML = '<span style="font-size: 1.2rem;">✓</span><span>Contact added successfully!</span>';
+                    alertBox.style.display = 'flex';
+                    document.getElementById('addContactForm').reset();
+                    
+                    setTimeout(() => {
+                        window.location.reload();
+                    }, 1500);
+                } else {
+                    alertBox.className = 'alert alert-error';
+                    alertBox.innerHTML = '<span style="font-size: 1.2rem;">✗</span><span>' + (data.error || 'Error adding contact') + '</span>';
+                    alertBox.style.display = 'flex';
+                }
+            } catch (error) {
+                const alertBox = document.getElementById('addContactAlert');
+                alertBox.className = 'alert alert-error';
+                alertBox.innerHTML = '<span style="font-size: 1.2rem;">✗</span><span>Error adding contact</span>';
+                alertBox.style.display = 'flex';
+            }
+        });
+
+        // Delete Contact
+        document.querySelectorAll('.delete-contact').forEach(btn => {
+            btn.addEventListener('click', async function() {
+                if (confirm('Are you sure you want to delete this contact?')) {
+                    const contactId = this.dataset.id;
+                    try {
+                        const response = await fetch(`/delete-contact/${contactId}`, {
+                            method: 'DELETE'
+                        });
+
+                        if (response.ok) {
+                            document.querySelector(`[data-contact-id="${contactId}"]`).remove();
+                        }
+                    } catch (error) {
+                        console.error('Error:', error);
+                    }
+                }
+            });
+        });
+    </script>
+</body>
+</html>

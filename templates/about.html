@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>About - Safety Assistant</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <!-- Navbar -->
+    <nav class="navbar">
+        <div class="container flex-between">
+            <a href="/" class="navbar-brand">
+                <span class="brand-icon">🛡️</span>
+                Safety Assistant
+            </a>
+            <ul class="nav-links">
+                <li><a href="/" class="nav-link">Home</a></li>
+                <li><a href="/about" class="nav-link active">About</a></li>
+                <li><a href="/emergency-contacts" class="nav-link">Contacts</a></li>
+                <li><a href="/contact" class="nav-link">Contact Us</a></li>
+                <li><a href="/support" class="nav-link">Support</a></li>
+            </ul>
+            <div class="user-profile" {% if not user %}style="display: none;"{% endif %}>
+                <span class="user-icon">👤</span>
+                <span class="user-name">{{ user[1] if user else 'User' }}</span>
+                <div class="dropdown">
+                    <a href="/emergency-contacts" class="dropdown-item">📋 My Contacts</a>
+                    <a href="/logout" class="dropdown-item logout-item">🚪 Logout</a>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <div class="page-content">
+        <div class="container">
+            <!-- Hero Section -->
+            <section style="text-align: center; padding: 4rem 0; margin-bottom: 3rem;">
+                <h1 style="color: var(--primary); font-size: 2.8rem; margin-bottom: 1rem;">About Safety Assistant</h1>
+                <p style="color: var(--text-secondary); font-size: 1.2rem; max-width: 700px; margin: 0 auto;">Empowering individuals with instant access to emergency services and safety tools</p>
+            </section>
+
+            <!-- Mission Section -->
+            <section style="margin-bottom: 4rem;">
+                <div class="grid-2">
+                    <div class="card">
+                        <div class="card-body">
+                            <h3 style="color: var(--primary); margin-top: 0;">Our Mission</h3>
+                            <p>To provide a simple, intuitive platform that connects people with critical emergency services and support networks. We believe everyone deserves quick access to help when they need it most.</p>
+                        </div>
+                    </div>
+                    <div class="card">
+                        <div class="card-body">
+                            <h3 style="color: var(--primary); margin-top: 0;">Our Vision</h3>
+                            <p>A world where no one is ever far from help. We're building a safety ecosystem that empowers communities and saves lives through technology and human connection.</p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Features Section -->
+            <section style="margin-bottom: 4rem;">
+                <h2 style="text-align: center; color: var(--primary); margin-bottom: 3rem;">Key Features</h2>
+                <div class="grid-3">
+                    <div class="card" style="border-left: 4px solid var(--primary);">
+                        <div class="card-body text-center">
+                            <div style="font-size: 2.5rem; margin-bottom: 1rem;">📍</div>
+                            <h4 style="margin: 1rem 0 0.5rem 0;">Location Detection</h4>
+                            <p style="color: var(--text-secondary); margin: 0; font-size: 0.95rem;">Instantly pinpoint your current location with GPS</p>
+                        </div>
+                    </div>
+                    <div class="card" style="border-left: 4px solid var(--secondary);">
+                        <div class="card-body text-center">
+                            <div style="font-size: 2.5rem; margin-bottom: 1rem;">🗺️</div>
+                            <h4 style="margin: 1rem 0 0.5rem 0;">Interactive Maps</h4>
+                            <p style="color: var(--text-secondary); margin: 0; font-size: 0.95rem;">View nearby emergency services on maps</p>
+                        </div>
+                    </div>
+                    <div class="card" style="border-left: 4px solid var(--success);">
+                        <div class="card-body text-center">
+                            <div style="font-size: 2.5rem; margin-bottom: 1rem;">📞</div>
+                            <h4 style="margin: 1rem 0 0.5rem 0;">Direct Calling</h4>
+                            <p style="color: var(--text-secondary); margin: 0; font-size: 0.95rem;">One-click calling to services</p>
+                        </div>
+                    </div>
+                    <div class="card" style="border-left: 4px solid var(--primary);">
+                        <div class="card-body text-center">
+                            <div style="font-size: 2.5rem; margin-bottom: 1rem;">👥</div>
+                            <h4 style="margin: 1rem 0 0.5rem 0;">Emergency Contacts</h4>
+                            <p style="color: var(--text-secondary); margin: 0; font-size: 0.95rem;">Store trusted contacts</p>
+                        </div>
+                    </div>
+                    <div class="card" style="border-left: 4px solid var(--secondary);">
+                        <div class="card-body text-center">
+                            <div style="font-size: 2.5rem; margin-bottom: 1rem;">🔐</div>
+                            <h4 style="margin: 1rem 0 0.5rem 0;">Secure & Private</h4>
+                            <p style="color: var(--text-secondary); margin: 0; font-size: 0.95rem;">Encrypted data protection</p>
+                        </div>
+                    </div>
+                    <div class="card" style="border-left: 4px solid var(--success);">
+                        <div class="card-body text-center">
+                            <div style="font-size: 2.5rem; margin-bottom: 1rem;">⚡</div>
+                            <h4 style="margin: 1rem 0 0.5rem 0;">Fast Response</h4>
+                            <p style="color: var(--text-secondary); margin: 0; font-size: 0.95rem;">Optimized for speed</p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Why Choose Us -->
+            <section style="margin-bottom: 4rem;">
+                <div class="card" style="background: linear-gradient(135deg, rgba(255,107,107,0.05) 0%, rgba(26,188,156,0.05) 100%);">
+                    <div class="card-body">
+                        <h2 style="text-align: center; color: var(--primary); margin-top: 0;">Why Choose Safety Assistant?</h2>
+                        <div style="max-width: 700px; margin: 2rem auto;">
+                            <div style="padding: 1rem 0; border-bottom: 1px solid var(--border);">
+                                <strong style="color: var(--primary);">✓ Real-time Data</strong>
+                                <p style="color: var(--text-secondary); margin: 0.5rem 0 0 0;">Up-to-date emergency service locations</p>
+                            </div>
+                            <div style="padding: 1rem 0; border-bottom: 1px solid var(--border);">
+                                <strong style="color: var(--primary);">✓ User-Friendly</strong>
+                                <p style="color: var(--text-secondary); margin: 0.5rem 0 0 0;">Intuitive interface designed for ease of use</p>
+                            </div>
+                            <div style="padding: 1rem 0; border-bottom: 1px solid var(--border);">
+                                <strong style="color: var(--primary);">✓ Available 24/7</strong>
+                                <p style="color: var(--text-secondary); margin: 0.5rem 0 0 0;">Always there when you need us</p>
+                            </div>
+                            <div style="padding: 1rem 0; border-bottom: 1px solid var(--border);">
+                                <strong style="color: var(--primary);">✓ Trusted Technology</strong>
+                                <p style="color: var(--text-secondary); margin: 0.5rem 0 0 0;">Built with proven, reliable technologies</p>
+                            </div>
+                            <div style="padding: 1rem 0;">
+                                <strong style="color: var(--primary);">✓ Community Focused</strong>
+                                <p style="color: var(--text-secondary); margin: 0.5rem 0 0 0;">We believe in community safety</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- CTA -->
+            <section style="text-align: center; padding: 3rem 0;">
+                <h2 style="color: var(--primary); margin-bottom: 1rem;">Be Prepared. Stay Safe.</h2>
+                <p style="color: var(--text-secondary); margin-bottom: 2rem;">Set up your emergency contacts today and be prepared for anything.</p>
+                <a href="/emergency-contacts" class="btn btn-primary btn-lg">➕ Add Emergency Contacts</a>
+            </section>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-grid">
+                <div class="footer-section">
+                    <h5>About Us</h5>
+                    <a href="/about">About Safety Assistant</a>
+                    <a href="/support">Help & Support</a>
+                    <a href="/contact">Contact Us</a>
+                </div>
+                <div class="footer-section">
+                    <h5>Resources</h5>
+                    <a href="/emergency-contacts">Emergency Contacts</a>
+                    <a href="/">Home</a>
+                    <a href="/support">FAQ</a>
+                </div>
+                <div class="footer-section">
+                    <h5>Legal</h5>
+                    <a href="#">Privacy Policy</a>
+                    <a href="#">Terms of Service</a>
+                    <a href="#">Cookie Policy</a>
+                </div>
+                <div class="footer-section">
+                    <h5>Connect</h5>
+                    <a href="#">Safety Tips</a>
+                    <a href="#">Blog</a>
+                    <a href="#">Careers</a>
+                </div>
+            </div>
+            
+            <div class="social-links">
+                <a href="#" class="social-link" title="Facebook">f</a>
+                <a href="#" class="social-link" title="Twitter">𝕏</a>
+                <a href="#" class="social-link" title="Instagram">📷</a>
+                <a href="#" class="social-link" title="LinkedIn">in</a>
+                <a href="#" class="social-link" title="WhatsApp">W</a>
+            </div>
+
+            <div class="footer-bottom">
+                <p>&copy; 2024 Safety Assistant. All rights reserved. Your safety is our priority.</p>
+            </div>
+        </div>
+    </footer>
+</body>
+</html>
+
