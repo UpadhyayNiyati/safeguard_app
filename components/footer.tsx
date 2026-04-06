@@ -87,7 +87,7 @@ export default function Footer() {
         {/* Social & Copyright */}
         <div className="flex flex-col md:flex-row justify-between items-center gap-4">
           <p className="text-muted-foreground text-sm">
-            © 2024 SafeGuard. All rights reserved.
+            {/* © 2026 SafeGuard. All rights reserved. */}
           </p>
           
           <div className="flex items-center gap-4">

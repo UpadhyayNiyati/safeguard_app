@@ -17,6 +17,7 @@ export default function MapComponent({ location, showLandmarks = false }: MapCom
 
     const loadMap = async () => {
       const L = (await import('leaflet')).default;
+      // await import('leaflet/dist/leaflet.css');
       await import('leaflet/dist/leaflet.css');
 
       if (!containerRef.current) return;
