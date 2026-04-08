@@ -4745,6 +4745,19 @@ export default function DashboardPage() {
     }
   }, [router]);
 
+  // --- Shared auth error handler ---
+  const handleAuthError = () => {
+    localStorage.removeItem("auth_token");
+    localStorage.removeItem("token");
+    localStorage.removeItem("refresh_token");
+    localStorage.removeItem("user_name");
+    localStorage.removeItem("user_email");
+    localStorage.removeItem("auth_user");
+    localStorage.removeItem("user");
+    localStorage.removeItem("role");
+    router.push('/auth/login');
+  };
+
   // --- Logic Functions ---
   const callEmergency = (number: string) => {
     window.location.href = `tel:${number}`;
@@ -4756,7 +4769,7 @@ export default function DashboardPage() {
     }
     
     const token = localStorage.getItem('auth_token'); 
-    if (!token) return alert("Session expired. Please login again.");
+    if (!token) return handleAuthError();
 
     setSearching(true);
     setSelectedService(serviceType);
@@ -4782,6 +4795,11 @@ export default function DashboardPage() {
       const contentType = response.headers.get("content-type");
       if (!contentType || !contentType.includes("application/json")) {
         throw new Error("Server error: Received unexpected response format.");
+      }
+
+      if (response.status === 401) {
+        handleAuthError();
+        return;
       }
 
       const data = await response.json();

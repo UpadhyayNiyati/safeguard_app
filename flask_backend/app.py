@@ -51,6 +51,8 @@ DATABASE_URI = os.getenv('DATABASE_URI', 'sqlite:///safeguard_new.db')
 app.config['SQLALCHEMY_DATABASE_URI'] = DATABASE_URI
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 app.config["JWT_SECRET_KEY"] = os.getenv("JWT_SECRET_KEY" , "dev-secret-key-123")
+app.config["JWT_ACCESS_TOKEN_EXPIRES"] = timedelta(days=30)
+app.config["JWT_REFRESH_TOKEN_EXPIRES"] = timedelta(days=90)
 
 app.config['SESSION_COOKIE_HTTPONLY'] = True
 app.config['SESSION_PERMANENT'] = True
@@ -893,10 +895,26 @@ def verify_otp():
 
 
 @app.route("/api/auth/logout", methods=["POST"])
+@jwt_required(verify_type=False)  # accepts both access and refresh tokens
 def logout():
-    """Logout user"""
-    session.clear()
-    return jsonify({'message': 'Logged out successfully'}), 200
+    """Logout user — revokes the token in the DB so it can't be reused"""
+    try:
+        from flask_jwt_extended import get_jwt
+        jwt_data = get_jwt()
+        jti = jwt_data["jti"]
+
+        # Mark the token as revoked
+        token = TokenBlocklist.query.filter_by(jti=jti).first()
+        if token:
+            token.revoked = True
+            db.session.commit()
+
+        session.clear()
+        return jsonify({'message': 'Logged out successfully'}), 200
+
+    except Exception as e:
+        print(f"❌ LOGOUT ERROR: {e}")
+        return jsonify({'message': 'Logged out'}), 200  # still return 200 so frontend clears storage
 
 def generate_otp():
     return str(random.randint(100000, 999999))

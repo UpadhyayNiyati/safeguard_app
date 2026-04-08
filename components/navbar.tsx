@@ -608,13 +608,31 @@ export default function Navbar() {
     }
   }, []);
 
-  const handleLogout = () => {
+  const handleLogout = async () => {
+    const token = localStorage.getItem("auth_token");
+
+    // Revoke the token server-side
+    if (token) {
+      try {
+        await fetch("http://localhost:5000/api/auth/logout", {
+          method: "POST",
+          headers: { Authorization: `Bearer ${token}` },
+        });
+      } catch {
+        // If backend is unreachable, still clear client-side
+      }
+    }
+
+    // Clear all auth data from localStorage
     localStorage.removeItem("auth_token");
     localStorage.removeItem("token");
+    localStorage.removeItem("refresh_token");
     localStorage.removeItem("user_name");
     localStorage.removeItem("user_email");
     localStorage.removeItem("auth_user");
     localStorage.removeItem("user");
+    localStorage.removeItem("role");
+
     window.location.href = "/auth/login";
   };
 

@@ -127,9 +127,9 @@ export default function LandingPage() {
               Secure Your Account <ArrowRight className="ml-2 h-6 w-6" />
             </Button>
           </Link>
-          <Link href="/auth/register">
+          <Link href="/auth/login">
             <Button variant="outline" className="px-10 py-7 rounded-2xl text-xl border-2 hover:bg-gray-50">
-              Sign Up
+              Sign In
             </Button>
           </Link>
         </div>
